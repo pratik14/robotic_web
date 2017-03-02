@@ -1,6 +1,6 @@
-%h1 Listing test_cases
+%h1 Listing TestCases
 
-%table
+%table.table
   %tr
     %th Name
     %th Status
@@ -14,10 +14,10 @@
       %td= test_case.name
       %td= test_case.status
       %td= test_case.message
-      %td= link_to 'Show', test_case
-      %td= link_to 'Edit', edit_test_case_path(test_case)
-      %td= link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }
+      %td= link_to 'Show', test_case, class: 'btn btn-default'
+      %td= link_to 'Edit', edit_test_case_path(test_case), class: 'btn btn-default'
+      %td= link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
 
 %br
 
-= link_to 'New Test case', new_test_case_path
+= link_to 'New Test case', new_test_case_path, class: 'btn btn-default'

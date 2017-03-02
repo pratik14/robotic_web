@@ -5,5 +5,5 @@
     = f.simple_fields_for :events do |event|
       = render 'event', f: event
     .links
-      = link_to_add_association 'add event', f, :events
-  = f.submit
+      = link_to_add_association 'add event', f, :events, class: 'btn btn-success'
+  = f.submit 'Submit', class: 'btn btn-success'
