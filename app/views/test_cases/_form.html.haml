@@ -1,0 +1,9 @@
+= simple_form_for @test_case do |f|
+  = f.input :name
+  %h3 Events
+  #events
+    = f.simple_fields_for :events do |event|
+      = render 'event', f: event
+    .links
+      = link_to_add_association 'add event', f, :events
+  = f.submit

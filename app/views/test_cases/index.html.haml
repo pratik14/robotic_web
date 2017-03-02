@@ -1,0 +1,23 @@
+%h1 Listing test_cases
+
+%table
+  %tr
+    %th Name
+    %th Status
+    %th Message
+    %th
+    %th
+    %th
+
+  - @test_cases.each do |test_case|
+    %tr
+      %td= test_case.name
+      %td= test_case.status
+      %td= test_case.message
+      %td= link_to 'Show', test_case
+      %td= link_to 'Edit', edit_test_case_path(test_case)
+      %td= link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Test case', new_test_case_path

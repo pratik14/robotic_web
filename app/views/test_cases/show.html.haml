@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @test_case.name
+%p
+  %b Status:
+  = @test_case.status
+%p
+  %b Message:
+  = @test_case.message
+
+= link_to 'Edit', edit_test_case_path(@test_case)
+\|
+= link_to 'Back', test_cases_path
