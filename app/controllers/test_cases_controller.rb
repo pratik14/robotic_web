@@ -24,15 +24,29 @@ class TestCasesController < ApplicationController
   # POST /test_cases
   # POST /test_cases.json
   def create
-    @test_case = TestCase.new(test_case_params)
+    if request.xhr?
+      @test_case = TestCase.new(name: params[:name])
+      params['key'].each do |index, attrs|
+        @test_case.events.build({
+          locator: attrs['xpath'],
+          value: attrs['value'],
+          keyword: attrs['trigger'],
+          element: attrs['type']
+        })
+      end
 
-    respond_to do |format|
+      @test_case.save
+
+      respond_to do |format|
+        format.js { head :ok }
+      end
+    else
+      @test_case = TestCase.new(test_case_params)
+
       if @test_case.save
-        format.html { redirect_to @test_case, notice: 'Test case was successfully created.' }
-        format.json { render :show, status: :created, location: @test_case }
+        redirect_to @test_case, notice: 'Test case was successfully created.'
       else
-        format.html { render :new }
-        format.json { render json: @test_case.errors, status: :unprocessable_entity }
+        render :new
       end
     end
   end

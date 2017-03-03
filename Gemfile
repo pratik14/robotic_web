@@ -42,3 +42,6 @@ gem 'spring',        group: :development
 gem 'haml-rails'
 gem 'simple_form'
 gem 'cocoon'
+gem 'sidekiq'
+gem 'paperclip'
+gem 'pry'
