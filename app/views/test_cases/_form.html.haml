@@ -1,9 +1,12 @@
 = simple_form_for @test_case do |f|
   = f.input :name
-  %h3 Events
   #events
     = f.simple_fields_for :events do |event|
-      = render 'event', f: event
+      = render 'event_fields', f: event
     .links
-      = link_to_add_association 'add event', f, :events, class: 'btn btn-success'
+      = link_to_add_association f, :events, class: 'btn btn-default pull-right' do
+        .glyphicon.glyphicon-plus{"aria-hidden" => "true"}
+        %span.glyphicon-class Add Event
+  %br
   = f.submit 'Submit', class: 'btn btn-success'
+  = link_to 'Back', test_cases_path, class: 'btn btn-default'

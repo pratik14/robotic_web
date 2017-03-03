@@ -7,4 +7,7 @@
     = csrf_meta_tags
   %body
     .container
-      = yield
+      .row
+        .col-md-12
+          = render 'layouts/notice'
+          = yield

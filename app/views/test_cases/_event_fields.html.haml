@@ -1,5 +1,8 @@
 .nested-fields.well
+  = link_to_remove_association f, class: 'btn btn-default pull-right' do
+    .glyphicon.glyphicon-remove{"aria-hidden" => "true"}
+  %br
+  = f.input :id, as: :hidden
   = f.input :keyword
   = f.input :locator
   = f.input :value
-  = link_to_remove_association "remove event", f, class: 'btn btn-danger'
