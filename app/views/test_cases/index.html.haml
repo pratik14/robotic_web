@@ -5,7 +5,6 @@
   %tr
     %th Name
     %th Status
-    %th Message
     %th
     %th
     %th
@@ -14,7 +13,6 @@
     %tr
       %td= test_case.name
       %td= test_case.status
-      %td= test_case.message
       %td= link_to 'Show', test_case, class: 'btn btn-default'
       %td= link_to 'Edit', edit_test_case_path(test_case), class: 'btn btn-default'
       %td= link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'

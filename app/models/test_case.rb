@@ -3,15 +3,23 @@ class TestCase < ActiveRecord::Base
   has_many :events, dependent: :destroy
   accepts_nested_attributes_for :events, reject_if: :all_blank, allow_destroy: true
 
-  after_create :verify
+  has_attached_file :source_file
+  validates_attachment_content_type :source_file, content_type: ["text/plain"]
+
+  before_save :attach_file
+  after_save :verify
 
   def verify
-    robot_file
+    create_source_file
     ExecuteTestCaseWorker.perform_async(id)
   end
 
-  def robot_file
-    default_file_path = "#{Rails.root}/default.robot"
+  def attach_file
+    create_source_file
+    self.source_file =  File.open("#{Rails.root}/#{file_name}", 'rb')
+  end
+
+  def create_source_file
     file = File.open(file_name, 'w+')
     file.puts('*** Settings ***')
     file.puts('Library           Selenium2Library    timeout=10')
@@ -26,7 +34,8 @@ class TestCase < ActiveRecord::Base
       case event.keyword
       when 'record'
         file.puts("    Open Browser  #{event.value}  ${BROWSER}")
-        file.puts("    Set Window Size  900  900")
+      when 'set_window_size'
+        file.puts("    Set Window Size  1200  1200")
       when 'click'
         file.puts("    Click Element  #{event.locator}")
       when 'change'
@@ -41,6 +50,6 @@ class TestCase < ActiveRecord::Base
   end
 
   def file_name
-    "#{name.parameterize.underscore}.robot"
+    "#{name.parameterize.underscore}.txt"
   end
 end

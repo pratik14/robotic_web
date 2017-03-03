@@ -75,6 +75,17 @@ class TestCasesController < ApplicationController
     end
   end
 
+  def verify
+    test_case = TestCase.find params[:id]
+    test_case.verify
+    redirect_to action: :index
+  end
+
+  def download
+    test_case = TestCase.find params[:id]
+    send_file File.open("#{Rails.root}/public#{test_case.source_file.url}".split('?')[0])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_test_case

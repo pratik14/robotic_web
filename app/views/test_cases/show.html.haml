@@ -7,10 +7,29 @@
 %p
   %b Status:
   = @test_case.status
-%p
-  %b Message:
-  = @test_case.message
+
+%h3 Steps
+#accordion.panel-group{"aria-multiselectable" => "true", :role => "tablist"}
+  .panel.panel-default
+    %ul
+      - @test_case.events.each_with_index do |event, index|
+        %li
+          - if event.status == 'PASS'
+            %p
+              %b= event.message
+          - else
+            %p
+              %b
+                = event.message
+              = link_to 'Check screenshot', event.avatar.url
+          - break if event.status == 'FAIL'
+
+
 
 = link_to 'Edit', edit_test_case_path(@test_case), class: 'btn btn-default'
 \|
 = link_to 'Back', test_cases_path, class: 'btn btn-default'
+\|
+= link_to 'Verify', verify_test_case_path(@test_case), class: 'btn btn-default'
+\|
+= link_to 'Download', download_test_case_path(@test_case), class: 'btn btn-default'

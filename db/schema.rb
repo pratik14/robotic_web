@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170302151514) do
+ActiveRecord::Schema.define(version: 20170303100843) do
 
   create_table "events", force: true do |t|
     t.integer  "test_case_id"
@@ -23,6 +23,10 @@ ActiveRecord::Schema.define(version: 20170302151514) do
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
   end
 
   add_index "events", ["test_case_id"], name: "index_events_on_test_case_id"
@@ -33,6 +37,10 @@ ActiveRecord::Schema.define(version: 20170302151514) do
     t.string   "message"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "source_file_file_name"
+    t.string   "source_file_content_type"
+    t.integer  "source_file_file_size"
+    t.datetime "source_file_updated_at"
   end
 
 end

@@ -14,6 +14,7 @@ class ExecuteTestCaseWorker
       save_result_to_db(test_case)
       test_case.save
     rescue Exception => e
+      p e
       test_case.status = 'failed'
       test_case.message = e
       test_case.save
@@ -34,6 +35,7 @@ class ExecuteTestCaseWorker
         event.message = kw['msg']
       else
         event.message = kw['msg'][1]
+        event.avatar =  File.open("#{Rails.root}/selenium-screenshot-1.png", 'rb')
       end
       event.save
     end
