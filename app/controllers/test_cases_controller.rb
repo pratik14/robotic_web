@@ -4,7 +4,7 @@ class TestCasesController < ApplicationController
   # GET /test_cases
   # GET /test_cases.json
   def index
-    @test_cases = TestCase.all
+    @test_cases = TestCase.all.paginate(:page => params[:page], :per_page => 5).order('created_at DESC')
   end
 
   # GET /test_cases/1
