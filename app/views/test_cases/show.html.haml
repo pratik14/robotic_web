@@ -9,16 +9,20 @@
   = @test_case.status
 
 %h3 Steps
-#accordion.panel-group{"aria-multiselectable" => "true", :role => "tablist"}
-  .panel.panel-default
+%div
+  %div
     %ul
       - @test_case.events.each_with_index do |event, index|
         %li
           - if event.status == 'PASS'
             %p
+              %b
+                %span.glyphicon.glyphicon-ok
               %b= event.message
           - else
             %p
+              %b
+                %span.glyphicon.glyphicon-remove
               %b
                 = event.message
               = link_to 'Check screenshot', event.avatar.url

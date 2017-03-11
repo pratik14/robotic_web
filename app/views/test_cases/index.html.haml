@@ -9,14 +9,19 @@
   %tr
     %th Name
     %th Status
-    %th
-    %th
-    %th
-
+    %th Screenshot
+    %th Action
   - @test_cases.each do |test_case|
     %tr
       %td= test_case.name
       %td= test_case.status
-      %td= link_to 'Show', test_case, class: 'btn btn-default'
-      %td= link_to 'Edit', edit_test_case_path(test_case), class: 'btn btn-default'
-      %td= link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
+      %td
+        - if test_case.failed?
+          = link_to 'Screenshot', test_case.screenshot
+        - else
+          %span ---
+      %td
+        = link_to 'Edit', edit_test_case_path(test_case), class: 'btn btn-default'
+        = link_to 'Verify', verify_test_case_path(test_case), class: 'btn btn-default'
+        = link_to 'Download', download_test_case_path(test_case), class: 'btn btn-default'
+        = link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
