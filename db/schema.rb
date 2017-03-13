@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170303100843) do
+ActiveRecord::Schema.define(version: 20170313125745) do
 
   create_table "events", force: true do |t|
     t.integer  "test_case_id"
+    t.integer  "keyword_id"
     t.string   "locator"
-    t.string   "keyword"
+    t.string   "text"
     t.string   "value"
-    t.string   "element"
     t.string   "message"
     t.string   "status"
     t.datetime "created_at"
@@ -29,9 +29,20 @@ ActiveRecord::Schema.define(version: 20170303100843) do
     t.datetime "avatar_updated_at"
   end
 
+  add_index "events", ["keyword_id"], name: "index_events_on_keyword_id"
   add_index "events", ["test_case_id"], name: "index_events_on_test_case_id"
 
+  create_table "keywords", force: true do |t|
+    t.string   "name"
+    t.text     "documentation"
+    t.text     "arguments",           default: "--- []\n"
+    t.text     "mandatory_arguments", default: "--- []\n"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "test_cases", force: true do |t|
+    t.integer  "user_id"
     t.string   "name"
     t.string   "status"
     t.string   "message"
@@ -42,5 +53,29 @@ ActiveRecord::Schema.define(version: 20170303100843) do
     t.integer  "source_file_file_size"
     t.datetime "source_file_updated_at"
   end
+
+  add_index "test_cases", ["user_id"], name: "index_test_cases_on_user_id"
+
+  create_table "users", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
 end
