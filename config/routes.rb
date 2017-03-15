@@ -5,4 +5,5 @@ Rails.application.routes.draw do
     get :download, on: :member
   end
 
+  root 'home#index'
 end
