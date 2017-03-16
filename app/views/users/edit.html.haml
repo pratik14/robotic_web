@@ -1,0 +1,11 @@
+.page-header
+  %h1 Profile
+
+.well
+  .row
+    .col-md-6
+      = simple_form_for @user do |f|
+        = f.input :auth_token, readonly: true
+        = f.submit 'Generate New Token', class: 'btn btn-primary'
+    .col-md-3
+      &nbsp

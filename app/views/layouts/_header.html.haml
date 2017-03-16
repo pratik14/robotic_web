@@ -4,8 +4,13 @@
       = link_to '#', class: 'navbar-brand' do
         = image_tag 'logo.jpg'
     %ul.nav.navbar-nav.navbar-right
-      %li
-        - if user_signed_in?
-          = link_to 'Sign Out', destroy_user_session_path, method: :delete
-        - else
-          = link_to 'Sign In', new_user_session_path
+      - if user_signed_in?
+        %li.dropdown
+          %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            = current_user.email
+            %span.caret
+          %ul.dropdown-menu
+            %li= link_to 'Profile', edit_user_path(current_user)
+            %li= link_to 'Sign Out', destroy_user_session_path, method: :delete
+      - else
+        %li= link_to 'Sign In', new_user_session_path

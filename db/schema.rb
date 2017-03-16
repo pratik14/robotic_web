@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20170313125745) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
+    t.string   "auth_token",             default: "", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
