@@ -48,30 +48,12 @@ class TestCase < ActiveRecord::Base
     file.puts('*** Test Cases ***')
     file.puts("#{name}")
     events.collect do |event|
-      case event.keyword
-      when 'record'
-        file.puts("    Open Browser  #{event.value}  ${BROWSER}")
-      when 'set_window_size'
-        file.puts("    Set Window Size  1200  1200")
-      when 'click'
-        file.puts("    Click Element  #{event.locator}")
-      when 'change'
-        file.puts("    Input Text  #{event.locator}  #{event.value}")
-      when 'load'
-        file.puts("    Wait For Condition  return document.readyState == 'complete'")
-      when 'assertion'
-        file.puts("    Element Text Should Be  #{event.locator}   #{event.value}")
-      when 'Mouse Over'
-        file.puts("    Mouse Over  #{event.locator}")
-      when 'Wait Until Element is Visible'
-        file.puts("    Wait Until Element is Visible  #{event.value}")
-      when 'Wait Until Page Contains Element'
-        file.puts("    Wait Until Page Contains Element  #{event.locator}")
-      when 'Wait Until Page Contains'
-        file.puts("    Wait Until Page Contains  #{event.value}")
-      else
-        file.puts("    #{event.keyword}  #{event.locator}   #{event.value}")
+      keyword = Keyword.find event.keyword_id
+      str = event.keyword.name
+      keyword.required_args.each do |arg|
+        str = str + "  #{event.send(arg.to_sym)}"
       end
+      file.puts("  #{str}")
     end
     file.close
   end

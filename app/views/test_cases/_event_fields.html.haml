@@ -2,7 +2,9 @@
   = link_to_remove_association f, class: 'btn btn-default pull-right' do
     .glyphicon.glyphicon-remove{"aria-hidden" => "true"}
   %br
-  = f.input :id, as: :hidden
-  = f.input :keyword, collection: KEYWORDS
-  = f.input :locator
-  = f.input :value
+  - if f.object.keyword_id
+    - k = Keyword.find f.object.keyword_id
+    = f.input :id, as: :hidden
+    = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
+    - k.required_args.each do |arg|
+      = f.input arg.to_sym

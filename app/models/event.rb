@@ -1,11 +1,22 @@
 class Event < ActiveRecord::Base
 
+  attr_accessor :width, :height
+
   belongs_to :keyword
   belongs_to :test_case
   has_attached_file :avatar
 
   validate :mandatory_arguments
   validates_attachment_content_type :avatar, content_type: /\Aimage\/.*\z/
+
+
+  def width
+    '1200'
+  end
+
+  def height
+    '1200'
+  end
 
   private
 

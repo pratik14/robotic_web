@@ -1,5 +1,5 @@
 class TestCasesController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   before_action :set_test_case, only: [:show, :edit, :update, :destroy]
 
   # GET /test_cases
@@ -30,9 +30,12 @@ class TestCasesController < ApplicationController
       params['key'].each do |index, attrs|
         keyword = Keyword.where(name: attrs['trigger']).first
         @test_case.events.build({
-          locator: attrs['xpath'],
+          locator: attrs['locator'],
           value: attrs['value'],
-          keyword_id: keyword_id
+          text: attrs['text'],
+          url: attrs['url'],
+          expected: attrs['expected'],
+          keyword_id: keyword.id
         })
       end
 

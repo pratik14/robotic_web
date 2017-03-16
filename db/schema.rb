@@ -16,8 +16,10 @@ ActiveRecord::Schema.define(version: 20170313125745) do
   create_table "events", force: true do |t|
     t.integer  "test_case_id"
     t.integer  "keyword_id"
+    t.string   "url"
     t.string   "locator"
     t.string   "text"
+    t.string   "expected"
     t.string   "value"
     t.string   "message"
     t.string   "status"
