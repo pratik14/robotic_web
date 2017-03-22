@@ -6,35 +6,10 @@
   %br
   %br
   %br
-  #events
+  %ul#events
     = f.simple_fields_for :events do |event|
-      #accordion.panel-group{"aria-multiselectable" => "true", :role => "tablist"}
-        .panel.panel-default
-          .panel-heading{:role => "tab", id: "heading#{event.object.id}"}
-            %h4.panel-title
-              %a{"aria-controls" => "collapse#{event.object.id}", "aria-expanded" => "true", "data-parent" => "#accordion", "data-toggle" => "collapse", :href => "#collapse#{event.object.id}", :role => "button"}
-                - if event.object.status == 'PASS'
-                  %p
-                    %b
-                      %span.glyphicon.glyphicon-ok-sign.green
-                    %b= event.object.message.humanize
-                - elsif event.object.status == 'FAIL'
-                  %p
-                    %b
-                      %span.glyphicon.glyphicon-remove-sign.red
-                    %b
-                      = event.object.message.humanize
-                  = link_to 'Check screenshot', event.object.avatar.url
-                - else
-                  %p
-                    %b
-                      %span.glyphicon.glyphicon-question-sign
-                    %b
-                      Pending
-          .panel-collapse.collapse{"aria-labelledby" => "heading#{event.object.id}", :role => "tabpanel", id: "collapse#{event.object.id}"}
-            .panel-body
-              = render 'event_fields', f: event
-      %br
+      = render 'event_fields', f: event
+    %br
     .links
       = link_to_add_association f, :events, class: 'btn btn-default pull-right' do
         .glyphicon.glyphicon-plus{"aria-hidden" => "true"}
@@ -42,3 +17,6 @@
   %br
   = f.submit 'Submit', class: 'btn btn-success'
   = link_to 'Back', test_cases_path, class: 'btn btn-default'
+  = link_to 'Recalculate', test_cases_path, class: 'btn btn-default'
+:javascript
+  keyword_list = #{@keyword_list.to_json}

@@ -1,10 +1,20 @@
-.nested-fields
+%li.nested-fields.well
   = link_to_remove_association f, class: 'btn btn-default pull-right' do
     .glyphicon.glyphicon-remove{"aria-hidden" => "true"}
   %br
-  - if f.object.keyword_id
-    - k = Keyword.find f.object.keyword_id
-    = f.input :id, as: :hidden
-    = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
-    - k.required_args.each do |arg|
-      = f.input arg.to_sym
+  - k = Keyword.where(id: f.object.keyword_id).first || Keyword.new
+  = f.input :id, as: :hidden
+  = f.input :order_number, as: :hidden
+  = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
+  = f.input :url, wrapper_html: { class: 'value_fields url' }, input_html: {class: 'col-xs-3'}
+  = f.input :locator, wrapper_html: { class: 'value_fields locator' }
+  = f.input :text, wrapper_html: { class: 'value_fields text' }
+  = f.input :expected, wrapper_html: { class: 'value_fields expected' }
+  = f.input :value, wrapper_html: { class: 'value_fields value' }
+  = f.input :condition, wrapper_html: { class: 'value_fields condition' }, input_html: {class: 'col-xs-3'}
+  %br
+  - unless f.object.status.blank?
+    %p
+      %b
+        Description:
+        %i= f.object.message.try(:humanize)

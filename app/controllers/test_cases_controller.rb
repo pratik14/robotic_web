@@ -4,7 +4,7 @@ class TestCasesController < ApplicationController
   before_action :set_test_case, only: [:show, :edit, :update, :destroy]
 
   def index
-    @test_cases = TestCase.all.paginate(:page => params[:page], :per_page => 5).order('created_at DESC')
+    @test_cases = current_user.test_cases.paginate(:page => params[:page], :per_page => 5).order('created_at DESC')
   end
 
   def new
@@ -12,14 +12,20 @@ class TestCasesController < ApplicationController
   end
 
   def create
-    @test_case = TestCase.new(name: params[:name])
+    test_case = @user.test_cases.build(name: params[:name])
     params['key'].each do |index, attrs|
       keyword = Keyword.where(name: attrs['trigger']).first
-      test_case_params.merge!(keyword_id: keyword.id)
-      @test_case.events.build(test_case_params)
+      attrs = attrs.select{|k,v| ['locator', 'value', 'text', 'expected', 'url', 'condition', 'order_number'].include? k}
+      #TODO Remove try from here
+      attrs.merge!(keyword_id: keyword.try(:id))
+      test_case.events.build(attrs)
     end
-    @test_case.save
-    head :ok
+    test_case.save
+    render json: { message: 'Successfully Added' }
+  end
+
+  def edit
+    @keyword_list = Keyword.all.inject({}){|h,k| h[k.id]=k.required_args;h; }
   end
 
   def update
@@ -27,6 +33,7 @@ class TestCasesController < ApplicationController
       if @test_case.update(test_case_params)
         format.html { redirect_to @test_case, notice: 'Test case was successfully updated.' }
       else
+        @keyword_list = Keyword.all.inject({}){|h,k| h[k.id]=k.required_args;h; }
         format.html { render :edit }
       end
     end
@@ -51,18 +58,21 @@ class TestCasesController < ApplicationController
   private
 
   def set_test_case
-    @test_case = TestCase.find(params[:id])
+    @test_case = current_user.test_cases.find(params[:id])
   end
 
   def test_case_params
-    params.require(:test_case).permit(:name, :status, :message, events_attributes: [:keyword_id, :locator, :value, :text, :expected, :url, :id, :_destroy])
+    params.require(:test_case).permit(:name,
+                                      :status,
+                                      :message,
+                                      events_attributes: [:keyword_id, :locator, :value, :text, :expected,
+                                                          :url, :condition, :order_number, :id, :_destroy])
   end
 
   def authenticate_token!
-    begin
-      @user = User.find(auth_token: params[:auth_token])
-    rescue
-      render json: { errors: ['Not Authenticated'] }, status: :unauthorized
+    @user = User.where(auth_token: params[:auth_token]).first
+    unless @user
+      render json: { errors: ['No User found with given auth token'] }, status: :unauthorized
     end
   end
 end

@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 
   before_create :set_token
 
+  has_many :test_cases
+
   private
 
   def set_token

@@ -1,11 +1,13 @@
 class TestCase < ActiveRecord::Base
 
-  belongs_to :user, dependent: :destroy
+  belongs_to :user
   has_many :events, dependent: :destroy
   accepts_nested_attributes_for :events, reject_if: :all_blank, allow_destroy: true
 
   has_attached_file :source_file
   validates_attachment_content_type :source_file, content_type: ["text/plain", "text/x-r", "text/x-patch", "text/x-diff"]
+
+  validates_associated :events
 
   before_save :attach_file
 
@@ -53,6 +55,7 @@ class TestCase < ActiveRecord::Base
       keyword.required_args.each do |arg|
         str = str + "  #{event.send(arg.to_sym)}"
       end
+      str= str + "  phantomjs" if keyword.name == 'Open Browser'
       file.puts("  #{str}")
     end
     file.close
