@@ -3,10 +3,12 @@ $(document).on "turbolinks:load", ->
     start: (event, ui) ->
       start_pos = ui.item.index()
       ui.item.data 'start_pos', start_pos
+      ui.item.css('border', '2px dashed blue');
       return
     update: (event, ui) ->
       index = ui.item.index()
       start_pos = ui.item.data('start_pos')
+      ui.item.css('border', '2px solid blue');
       if start_pos < index
         i = index + 1
         while i > 0

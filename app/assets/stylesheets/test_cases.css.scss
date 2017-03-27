@@ -18,4 +18,13 @@
     padding: 0px;
     list-style-type: none;
   }
+  .passDiv{
+    border: 2px solid green;
+  }
+  .failDiv{
+    border: 2px solid red;
+  }
+  .ui-sortable-handle{
+    cursor: pointer;
+  }
 }

@@ -1,4 +1,4 @@
-%li.nested-fields.well
+%li.nested-fields.well{class: "#{f.object.status.to_s.downcase}Div"}
   = link_to_remove_association f, class: 'btn btn-default pull-right' do
     .glyphicon.glyphicon-remove{"aria-hidden" => "true"}
   %br
@@ -12,6 +12,7 @@
   = f.input :expected, wrapper_html: { class: 'value_fields expected' }
   = f.input :value, wrapper_html: { class: 'value_fields value' }
   = f.input :condition, wrapper_html: { class: 'value_fields condition' }, input_html: {class: 'col-xs-3'}
+  %br
   %br
   - unless f.object.status.blank?
     %p
