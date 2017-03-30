@@ -1,4 +1,5 @@
 $(document).on "turbolinks:load", ->
+  $('.carousel').carousel({ wrap: false })
   $('#events').sortable
     start: (event, ui) ->
       start_pos = ui.item.index()
@@ -35,3 +36,14 @@ $(document).on "turbolinks:load", ->
     $.each required_args, (index, value) ->
       that.closest('.nested-fields').find('.' + value).show()
   $('.test_case_events_keyword_id select').trigger('change')
+
+  $('.fields_div').hide();
+
+  $('#events').on 'click', '.edit_event', (e)->
+    e.preventDefault()
+    $(this).closest('li').find('.fields_div').toggle();
+
+  $('#events').on 'click', '.open', (e)->
+    e.preventDefault()
+    $('#myModal').modal('show')
+    $('.carousel').carousel(parseInt(this.id))

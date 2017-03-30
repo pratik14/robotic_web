@@ -21,11 +21,15 @@ class Event < ActiveRecord::Base
     '1200'
   end
 
+  def pending?
+    status.blank?
+  end
+
   private
 
   def mandatory_arguments
     keyword.required_args.each do |arg|
-      errors.add("arg.to_sym" => 'should not be blank') if self.send(arg.to_sym).blank?
+      errors.add("#{arg.to_sym}", 'should not be blank') if self.send(arg.to_sym).blank?
     end
   end
 end

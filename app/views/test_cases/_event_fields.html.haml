@@ -1,21 +1,28 @@
 %li.nested-fields.well{class: "#{f.object.status.to_s.downcase}Div"}
   = link_to_remove_association f, class: 'btn btn-default pull-right' do
     .glyphicon.glyphicon-remove{"aria-hidden" => "true"}
-  %br
-  - k = Keyword.where(id: f.object.keyword_id).first || Keyword.new
-  = f.input :id, as: :hidden
-  = f.input :order_number, as: :hidden
-  = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
-  = f.input :url, wrapper_html: { class: 'value_fields url' }, input_html: {class: 'col-xs-3'}
-  = f.input :locator, wrapper_html: { class: 'value_fields locator' }
-  = f.input :text, wrapper_html: { class: 'value_fields text' }
-  = f.input :expected, wrapper_html: { class: 'value_fields expected' }
-  = f.input :value, wrapper_html: { class: 'value_fields value' }
-  = f.input :condition, wrapper_html: { class: 'value_fields condition' }, input_html: {class: 'col-xs-3'}
-  %br
-  %br
+
+  = link_to '#', class: 'btn btn-default pull-right edit_event' do
+    .glyphicon.glyphicon-edit{"aria-hidden" => "true"}
+
+  - if f.object.status == 'PASS'
+    = link_to '#', class: 'btn btn-default pull-right open', id: "#{f.object.order_number.to_i - 1}" do
+      .glyphicon.glyphicon-screenshot{"aria-hidden" => "true"}
+  .fields_div
+    %br
+    - k = Keyword.where(id: f.object.keyword_id).first || Keyword.new
+    = f.input :id, as: :hidden
+    = f.input :order_number, as: :hidden
+    = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
+    = f.input :url, wrapper_html: { class: 'value_fields url' }, input_html: {class: 'col-xs-3'}
+    = f.input :locator, wrapper_html: { class: 'value_fields locator' }
+    = f.input :text, wrapper_html: { class: 'value_fields text' }
+    = f.input :expected, wrapper_html: { class: 'value_fields expected' }
+    = f.input :value, wrapper_html: { class: 'value_fields value' }
+    = f.input :condition, wrapper_html: { class: 'value_fields condition' }, input_html: {class: 'col-xs-3'}
+    %br
+    %br
   - unless f.object.status.blank?
     %p
       %b
-        Description:
         %i= f.object.message.try(:humanize)

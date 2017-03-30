@@ -1,4 +1,4 @@
-class TestCase < ActiveRecord::Base
+  class TestCase < ActiveRecord::Base
 
   belongs_to :user
   has_many :events, dependent: :destroy
@@ -57,6 +57,7 @@ class TestCase < ActiveRecord::Base
       end
       str= str + "  phantomjs" if keyword.name == 'Open Browser'
       file.puts("  #{str}")
+      file.puts("  Capture Page Screenshot")
     end
     file.close
   end
