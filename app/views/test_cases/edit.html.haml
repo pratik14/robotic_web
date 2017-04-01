@@ -17,11 +17,11 @@
           / Wrapper for slides
           .carousel-inner{:role => "listbox"}
             - @test_case.events.each_with_index do |event, index|
-              - if event.status == 'PASS'
+              - if !event.status.blank?
                 .item{class: index == 0 ? 'active' : ''}
                   = image_tag event.avatar.url
                   .carousel-caption
-                    = event.message
+                    .black= event.message
 
           %a.left.carousel-control{"data-slide" => "prev", :href => "#carousel-example-generic", :role => "button"}
             %span.glyphicon.glyphicon-chevron-left{"aria-hidden" => "true"}

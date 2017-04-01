@@ -56,8 +56,25 @@
         str = str + "  #{event.send(arg.to_sym)}"
       end
       str= str + "  phantomjs" if keyword.name == 'Open Browser'
+
+      if keyword.name.include?('Click')
+        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '5px solid black'")
+        file.puts("  Capture Page Screenshot")
+      end
+
+      if keyword.name.include?('Input')
+        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '5px solid black'")
+      end
+
+      if keyword.name.include?('Wait') && keyword.name != 'Wait For Condition'
+        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.background = 'yellow'")
+      end
+
       file.puts("  #{str}")
-      file.puts("  Capture Page Screenshot")
+
+      if !keyword.name.include?('Click')
+        file.puts("  Capture Page Screenshot")
+      end
     end
     file.close
   end
