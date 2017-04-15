@@ -11,17 +11,10 @@ class TestCasesController < ApplicationController
     @test_case = TestCase.new
   end
 
+  ##Will receive only json request
   def create
-    test_case = @user.test_cases.build(name: params[:name])
-    params['key'].each do |index, attrs|
-      keyword = Keyword.where(name: attrs['trigger']).first
-      attrs = attrs.select{|k,v| ['locator', 'value', 'text', 'expected', 'url', 'condition', 'order_number'].include? k}
-      #TODO Remove try from here
-      attrs.merge!(keyword_id: keyword.try(:id))
-      test_case.events.build(attrs)
-    end
-    test_case.save
-    render json: { message: 'Successfully Added' }
+    status, message = AddTestCase.new(params).create
+    render json: { message: message }, status: status
   end
 
   def edit

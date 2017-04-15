@@ -44,7 +44,17 @@ gem 'simple_form'
 gem 'cocoon'
 gem 'sidekiq'
 gem 'paperclip'
-gem 'pry'
 gem 'will_paginate-bootstrap'
 gem 'devise'
 gem 'devise-bootstrap-views'
+gem 'rake', '< 11.0'
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'pry'
+end
+
+group :test do
+  gem 'factory_girl_rails'
+  gem 'faker'
+end

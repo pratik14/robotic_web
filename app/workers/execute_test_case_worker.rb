@@ -20,7 +20,7 @@ class ExecuteTestCaseWorker
     end
   end
 
-  def set_test_case_result(hash)
+  def set_test_case_result(test_case, hash)
     test_case.status = hash['robot']['suite']['status']['status']
     if test_case.status == 'FAIL'
       test_case.message = hash['robot']['suite']['test']['status']
@@ -30,34 +30,37 @@ class ExecuteTestCaseWorker
 
   def save_result_to_db(test_case)
     hash = Hash.from_xml(File.read("#{Rails.root}/#{test_case.file_name}.xml"))
-    # set_test_case_result(hash)
+    set_test_case_result(test_case, hash)
     hash = hash['robot']['suite']['test']['kw']
     newIndex = -1
     hash.each_with_index do |kw, index|
+      if kw['status']['status'] == 'FAIL'
+        binding.pry
+        p kw
+      end
       unless kw['name'] == 'Capture Page Screenshot' || kw['name'] == 'Execute Javascript'
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
         event.status = kw['status']['status']
-        binding.pry
         if File.exist?("#{Rails.root}/selenium-screenshot-#{newIndex + 1}.png")
           event.avatar =  File.open("#{Rails.root}/selenium-screenshot-#{newIndex + 1}.png", 'rb')
         end
         if event.status == 'PASS'
-          event.message = kw['msg']
+          # event.message = kw['msg']
           if event.message.blank?
             doc = kw['doc']
             args = [kw['arguments']['arg']].flatten
             args.each do |arg|
               doc = doc.sub(/`[a-z]*`/, arg)
             end
-            event.message = doc
+            # event.message = doc
           end
         else
-          event.message = [kw['msg']].flatten.join(',')
+          # event.message = [kw['msg']].flatten.join(',')
         end
 
         if event.keyword.name == 'Click Element'
-          event.message = event.message.to_s + event.text.to_s
+          # event.message = event.message.to_s + event.text.to_s
         end
 
         event.save!
