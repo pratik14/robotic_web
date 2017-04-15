@@ -12,8 +12,11 @@
   before_save :attach_file
 
   def screenshot
-    return '--'  unless failed?
-    failed_event.avatar.url
+    begin
+      failed_event.avatar.url
+    rescue 
+      return '--'
+    end
   end
 
   def failed_event
@@ -58,25 +61,35 @@
       str= str + "  phantomjs" if keyword.name == 'Open Browser'
 
       if keyword.name.include?('Click')
-        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '5px solid black'")
+        file.puts(add_css(event.locator))
         file.puts("  Capture Page Screenshot")
       end
 
-      if keyword.name.include?('Input')
-        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '5px solid black'")
-      end
 
-      if keyword.name.include?('Wait') && keyword.name != 'Wait For Condition'
-        file.puts("  Execute Javascript  document.evaluate('#{event.locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.background = 'yellow'")
+      if keyword.name.include?('Wait') && keyword.name != 'Wait For Condition' && !keyword.name.include?('Wait Until Element Is Visible')
+        file.puts(add_css(event.locator))
       end
 
       file.puts("  #{str}")
+      if keyword.name.include?('Wait Until Element Is Visible')
+        file.puts(add_css(event.locator))
+      end
+
+      if keyword.name.include?('Input')
+        file.puts(add_css(event.locator))
+      end
 
       if !keyword.name.include?('Click')
         file.puts("  Capture Page Screenshot")
       end
     end
     file.close
+  end
+
+  def add_css(locator)
+    style = '5px solid black'
+    keyword = 'Execute Javascript'
+    "  #{keyword}  document.evaluate('#{locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '#{style}'"
   end
 
   def file_name
