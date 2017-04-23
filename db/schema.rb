@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20170313125745) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "events", force: true do |t|
     t.integer  "test_case_id"
     t.integer  "keyword_id"
@@ -33,14 +36,13 @@ ActiveRecord::Schema.define(version: 20170313125745) do
     t.datetime "avatar_updated_at"
   end
 
-  add_index "events", ["keyword_id"], name: "index_events_on_keyword_id"
-  add_index "events", ["test_case_id"], name: "index_events_on_test_case_id"
+  add_index "events", ["keyword_id"], name: "index_events_on_keyword_id", using: :btree
+  add_index "events", ["test_case_id"], name: "index_events_on_test_case_id", using: :btree
 
   create_table "keywords", force: true do |t|
     t.string   "name"
     t.text     "documentation"
-    t.text     "arguments",           default: "--- []\n"
-    t.text     "mandatory_arguments", default: "--- []\n"
+    t.text     "arguments",     default: [], array: true
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -58,7 +60,7 @@ ActiveRecord::Schema.define(version: 20170313125745) do
     t.datetime "source_file_updated_at"
   end
 
-  add_index "test_cases", ["user_id"], name: "index_test_cases_on_user_id"
+  add_index "test_cases", ["user_id"], name: "index_test_cases_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -80,7 +82,7 @@ ActiveRecord::Schema.define(version: 20170313125745) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
