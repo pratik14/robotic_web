@@ -22,4 +22,6 @@ test:
 
 production:
   <<: *default
-  database: db/production
+  database: robotic_production
+  username: deploy
+  password: robotic
