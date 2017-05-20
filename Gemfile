@@ -48,6 +48,7 @@ gem 'will_paginate-bootstrap'
 gem 'devise'
 gem 'devise-bootstrap-views'
 gem 'rake', '< 11.0'
+gem 'figaro'
 
 group :development, :test do
   gem 'rspec-rails'
