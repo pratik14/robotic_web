@@ -39,6 +39,9 @@ gem 'spring',        group: :development
 # gem 'debugger', group: [:development, :test]
 
 
+gem 'mina'
+gem 'mina-sidekiq', :require => false
+
 gem 'haml-rails'
 gem 'simple_form'
 gem 'cocoon'
