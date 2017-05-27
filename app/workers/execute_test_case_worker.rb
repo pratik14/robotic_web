@@ -34,10 +34,6 @@ class ExecuteTestCaseWorker
     hash = hash['robot']['suite']['test']['kw']
     newIndex = -1
     hash.each_with_index do |kw, index|
-      if kw['status']['status'] == 'FAIL'
-        binding.pry
-        p kw
-      end
       unless kw['name'] == 'Capture Page Screenshot' || kw['name'] == 'Execute Javascript'
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
@@ -46,21 +42,21 @@ class ExecuteTestCaseWorker
           event.avatar =  File.open("#{Rails.root}/selenium-screenshot-#{newIndex + 1}.png", 'rb')
         end
         if event.status == 'PASS'
-          # event.message = kw['msg']
+          event.message = kw['msg']
           if event.message.blank?
             doc = kw['doc']
             args = [kw['arguments']['arg']].flatten
             args.each do |arg|
               doc = doc.sub(/`[a-z]*`/, arg)
             end
-            # event.message = doc
+            event.message = doc
           end
         else
-          # event.message = [kw['msg']].flatten.join(',')
+          event.message = [kw['msg']].flatten.join(',')
         end
 
         if event.keyword.name == 'Click Element'
-          # event.message = event.message.to_s + event.text.to_s
+          event.message = event.message.to_s + event.text.to_s
         end
 
         event.save!
