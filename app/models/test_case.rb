@@ -1,4 +1,4 @@
-  class TestCase < ActiveRecord::Base
+class TestCase < ActiveRecord::Base
 
   belongs_to :user
   has_many :events, dependent: :destroy
@@ -38,11 +38,11 @@
 
   def attach_file
     create_source_file
-    self.source_file =  File.open("#{Rails.root}/#{file_name}", 'rb')
+    self.source_file =  File.open(file_path)
   end
 
   def create_source_file
-    file = File.open(file_name, 'w+')
+    file = File.open(file_path, 'w+')
     file.puts('*** Settings ***')
     file.puts('Library           Selenium2Library    timeout=10')
     file.puts('Suite Teardown    Close All Browsers')
@@ -52,6 +52,7 @@
     file.puts('')
     file.puts('*** Test Cases ***')
     file.puts("#{name}")
+    file.puts("  Set Screenshot Directory  #{Rails.root}/tmp/robot_file/")
     events.collect do |event|
       keyword = Keyword.find event.keyword_id
       str = event.keyword.name
@@ -90,6 +91,10 @@
     style = '5px solid black'
     keyword = 'Execute Javascript'
     "  #{keyword}  document.evaluate('#{locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '#{style}'"
+  end
+
+  def file_path
+    "#{Rails.root}/tmp/robot_file/#{file_name}"
   end
 
   def file_name

@@ -4,13 +4,8 @@ class ExecuteTestCaseWorker
   def perform(test_case_id)
     begin
       test_case = TestCase.find test_case_id
-      output = system("robot --log none --report none --output #{test_case.file_name}.xml #{test_case.file_name}")
+      output = system("robot --log none --report none --output #{test_case.file_path}.xml #{test_case.file_path}")
       output = `echo $?`
-      # if output == "0\n"
-      #   test_case.status = 'passed'
-      # else
-      #   test_case.status = 'failed'
-      # end
       save_result_to_db(test_case)
       test_case.save
     rescue Exception => e
@@ -29,17 +24,18 @@ class ExecuteTestCaseWorker
   end
 
   def save_result_to_db(test_case)
-    hash = Hash.from_xml(File.read("#{Rails.root}/#{test_case.file_name}.xml"))
+    hash = Hash.from_xml(File.read("#{test_case.file_path}.xml"))
     set_test_case_result(test_case, hash)
     hash = hash['robot']['suite']['test']['kw']
     newIndex = -1
     hash.each_with_index do |kw, index|
-      unless kw['name'] == 'Capture Page Screenshot' || kw['name'] == 'Execute Javascript'
+      unless kw['name'] == 'Capture Page Screenshot' || kw['name'] == 'Execute Javascript' || kw['name'] == 'Set Screenshot Directory'
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
         event.status = kw['status']['status']
-        if File.exist?("#{Rails.root}/selenium-screenshot-#{newIndex + 1}.png")
-          event.avatar =  File.open("#{Rails.root}/selenium-screenshot-#{newIndex + 1}.png", 'rb')
+        screenshot_path = "#{Rails.root}/tmp/robot_file/selenium-screenshot-#{newIndex + 1}.png"
+        if File.exist?(screenshot_path)
+          event.avatar =  File.open(screenshot_path, 'rb')
         end
         if event.status == 'PASS'
           event.message = kw['msg']
