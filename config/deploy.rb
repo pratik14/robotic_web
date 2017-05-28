@@ -12,7 +12,7 @@ set :branch, 'master'
 set :user, 'deploy'
 
 
-set :shared_paths, ['config/application.yml', 'log']
+set :shared_paths, ['config/application.yml', 'log', 'tmp/robot_file']
 
 
 task :environment do
@@ -20,6 +20,9 @@ task :environment do
 end
 
 task :setup => :environment do
+  queue! %[mkdir -p "#{deploy_to}/#{shared_path}/tmp/robot_file"]
+  queue! %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/robot_file"]
+
   queue! %[mkdir -p "#{deploy_to}/#{shared_path}/log"]
   queue! %[chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/log"]
 
