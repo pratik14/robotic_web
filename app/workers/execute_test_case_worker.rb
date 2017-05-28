@@ -33,7 +33,7 @@ class ExecuteTestCaseWorker
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
         event.status = kw['status']['status']
-        screenshot_path = "#{Rails.root}/tmp/robot_file/selenium-screenshot-#{newIndex + 1}.png"
+        screenshot_path = "#{Rails.root}/tmp/robot_file/#{test_case.id}/selenium-screenshot-#{newIndex + 1}.png"
         if File.exist?(screenshot_path)
           event.avatar =  File.open(screenshot_path, 'rb')
         end

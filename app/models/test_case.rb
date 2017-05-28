@@ -52,7 +52,7 @@ class TestCase < ActiveRecord::Base
     file.puts('')
     file.puts('*** Test Cases ***')
     file.puts("#{name}")
-    file.puts("  Set Screenshot Directory  #{Rails.root}/tmp/robot_file/")
+    file.puts("  Set Screenshot Directory  #{Rails.root}/tmp/robot_file/#{id}")
     events.collect do |event|
       keyword = Keyword.find event.keyword_id
       str = event.keyword.name
@@ -94,7 +94,9 @@ class TestCase < ActiveRecord::Base
   end
 
   def file_path
-    "#{Rails.root}/tmp/robot_file/#{file_name}"
+    dir_path = "#{Rails.root}/tmp/robot_file/#{id}/"
+    Dir.mkdir(dir_path) unless File.exists?(dir_path)
+    dir_path + file_name
   end
 
   def file_name
