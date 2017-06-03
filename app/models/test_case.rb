@@ -83,6 +83,10 @@ class TestCase < ActiveRecord::Base
       if !keyword.name.include?('Click')
         file.puts("  Capture Page Screenshot")
       end
+
+      if keyword.name == 'Open Browser'
+        file.puts("  Set Window Size  1200  800")
+      end
     end
     file.close
   end

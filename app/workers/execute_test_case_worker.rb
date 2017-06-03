@@ -29,7 +29,7 @@ class ExecuteTestCaseWorker
     hash = hash['robot']['suite']['test']['kw']
     newIndex = -1
     hash.each_with_index do |kw, index|
-      unless kw['name'] == 'Capture Page Screenshot' || kw['name'] == 'Execute Javascript' || kw['name'] == 'Set Screenshot Directory'
+      unless exlcuded_events.include? kw['name']
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
         event.status = kw['status']['status']
@@ -58,5 +58,10 @@ class ExecuteTestCaseWorker
         event.save!
       end
     end
+  end
+
+
+  def exlcuded_events
+    ['Capture Page Screenshot', 'Execute Javascript', 'Set Screenshot Directory', 'Set Window Size']
   end
 end
