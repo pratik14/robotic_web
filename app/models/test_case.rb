@@ -61,40 +61,22 @@ class TestCase < ActiveRecord::Base
       end
       str= str + "  phantomjs" if keyword.name == 'Open Browser'
 
-      if keyword.name.include?('Click')
-        file.puts(add_css(event.locator))
-        file.puts("  Capture Page Screenshot")
-      end
-
-
-      if keyword.name.include?('Wait') && keyword.name != 'Wait For Condition' && !keyword.name.include?('Wait Until Element Is Visible')
-        file.puts(add_css(event.locator))
-      end
-
+      file.puts(add_css(event.locator)) if event.locator
       file.puts("  #{str}")
-      if keyword.name.include?('Wait Until Element Is Visible')
-        file.puts(add_css(event.locator))
-      end
-
-      if keyword.name.include?('Input')
-        file.puts(add_css(event.locator))
-      end
-
-      if !keyword.name.include?('Click')
-        file.puts("  Capture Page Screenshot")
-      end
-
-      if keyword.name == 'Open Browser'
-        file.puts("  Set Window Size  1200  800")
-      end
+      file.puts("  Set Window Size  1200  800") if keyword.name == 'Open Browser'
+      file.puts("  Capture Page Screenshot")
     end
     file.close
   end
 
   def add_css(locator)
     style = '5px solid black'
-    keyword = 'Execute Javascript'
-    "  #{keyword}  document.evaluate('#{locator}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.style.border = '#{style}'"
+    "  Execute Javascript 
+       ...   var element = document.evaluate( '#{locator}' ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
+       ...   if (element != null) {
+       ...     element.style.border = '#{style}';
+       ...   }
+    "
   end
 
   def file_path

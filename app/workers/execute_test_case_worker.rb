@@ -62,6 +62,6 @@ class ExecuteTestCaseWorker
 
 
   def exlcuded_events
-    ['Capture Page Screenshot', 'Execute Javascript', 'Set Screenshot Directory', 'Set Window Size']
+    ['Capture Page Screenshot', 'Execute Javascript', 'Set Screenshot Directory', 'Set Window Size', 'Set Selenium Implicit Wait']
   end
 end
