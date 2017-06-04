@@ -29,7 +29,7 @@ class ExecuteTestCaseWorker
     hash = hash['robot']['suite']['test']['kw']
     newIndex = -1
     hash.each_with_index do |kw, index|
-      unless exlcuded_events.include? kw['name']
+      if external_events.include? kw['name']
         newIndex = newIndex + 1
         event = test_case.events[newIndex]
         event.status = kw['status']['status']
@@ -61,7 +61,7 @@ class ExecuteTestCaseWorker
   end
 
 
-  def exlcuded_events
-    ['Capture Page Screenshot', 'Execute Javascript', 'Set Screenshot Directory', 'Set Window Size', 'Set Selenium Implicit Wait']
+  def external_events
+    ["Open Browser", "Click Element", "Input Text", "Mouse Over", "Page Should Contain"]
   end
 end

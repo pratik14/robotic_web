@@ -62,9 +62,14 @@ class TestCase < ActiveRecord::Base
       str= str + "  phantomjs" if keyword.name == 'Open Browser'
 
       file.puts(add_css(event.locator)) if event.locator
+      if keyword.name == 'Click Element'
+        file.puts("  Capture Page Screenshot") if event.locator || keyword.name == 'Open Browser'
+      end
       file.puts("  #{str}")
       file.puts("  Set Window Size  1200  800") if keyword.name == 'Open Browser'
-      file.puts("  Capture Page Screenshot")
+      if keyword.name != 'Click Element'
+        file.puts("  Capture Page Screenshot") if event.locator || keyword.name == 'Open Browser'
+      end
     end
     file.close
   end
