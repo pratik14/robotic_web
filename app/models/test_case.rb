@@ -9,7 +9,7 @@ class TestCase < ActiveRecord::Base
 
   validates_associated :events
 
-  before_save :attach_file
+  #before_save :attach_file
 
   def screenshot
     begin
@@ -54,21 +54,33 @@ class TestCase < ActiveRecord::Base
     file.puts("#{name}")
     file.puts("  Set Screenshot Directory  #{Rails.root}/tmp/robot_file/#{id}")
     events.collect do |event|
-      keyword = Keyword.find event.keyword_id
-      str = event.keyword.name
-      keyword.required_args.each do |arg|
-        str = str + "  #{event.send(arg.to_sym)}"
-      end
-      str= str + "  phantomjs" if keyword.name == 'Open Browser'
-
-      file.puts(add_css(event.locator)) if event.locator
-      if keyword.name == 'Click Element'
-        file.puts("  Capture Page Screenshot") if event.locator || keyword.name == 'Open Browser'
-      end
-      file.puts("  #{str}")
-      file.puts("  Set Window Size  1200  800") if keyword.name == 'Open Browser'
-      if keyword.name != 'Click Element'
-        file.puts("  Capture Page Screenshot") if event.locator || keyword.name == 'Open Browser'
+      case event.trigger
+      when 'GoTo'
+        file.puts("  Open Browser  #{event.url}  phantomjs")
+        file.puts("  Set Window Size  1200  800")
+        file.puts("  Capture Page Screenshot")
+      when 'Load'
+        file.puts("  Wait For Condition  return document.readyState == 'complete'")
+      when 'Click'
+        file.puts("  Wait Until Element Is Visible  #{event.locator}")
+        file.puts(add_css(event.locator))
+        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
+        file.puts("  Capture Page Screenshot")
+        file.puts("  Click Element  #{event.locator}")
+        file.puts(wait_for_ajax)
+      when 'Change'
+        file.puts("  Wait Until Element Is Visible  #{event.locator}")
+        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
+        file.puts("  Input Text  #{event.locator}  #{event.text}")
+        file.puts(add_css(event.locator))
+        file.puts("  Capture Page Screenshot")
+        file.puts(wait_for_ajax)
+      when 'Hover'
+        file.puts("  Wait Until Element Is Visible  #{event.locator}")
+        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
+        file.puts("  Mouse Over  #{event.locator}")
+      when 'page_contains'
+        file.puts("  Page Should Contain  #{event.text}")
       end
     end
     file.close
@@ -82,6 +94,12 @@ class TestCase < ActiveRecord::Base
        ...     element.style.border = '#{style}';
        ...   }
     "
+  end
+
+  def wait_for_ajax
+    "  : FOR    ${INDEX}    IN RANGE    1    5000
+  \\    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
+  \\    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop"
   end
 
   def file_path

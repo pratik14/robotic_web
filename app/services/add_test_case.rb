@@ -34,14 +34,12 @@ class AddTestCase
 
   def build_events(test_case)
     params['key'].each do |index, attrs|
-      keyword = Keyword.where(name: attrs['trigger']).first
       attrs = attrs.select{|k,v| events_attributes.include? k}
-      attrs.merge!(keyword_id: keyword.try(:id))
       test_case.events.build(attrs)
     end
   end
 
   def events_attributes
-    ['locator', 'value', 'text', 'expected', 'url', 'condition', 'order_number', 'message']
+    ['locator', 'value', 'text', 'expected', 'url', 'condition', 'order_number', 'message', 'trigger']
   end
 end

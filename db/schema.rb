@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603080357) do
+ActiveRecord::Schema.define(version: 20170618044813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20170603080357) do
     t.integer  "keyword_id"
     t.integer  "order_number"
     t.string   "url"
-    t.string   "locator"
+    t.text     "locator"
     t.string   "text"
     t.string   "expected"
     t.string   "value"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20170603080357) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.string   "trigger"
   end
 
   add_index "events", ["keyword_id"], name: "index_events_on_keyword_id", using: :btree

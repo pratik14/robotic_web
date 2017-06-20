@@ -10,10 +10,8 @@
       .glyphicon.glyphicon-screenshot{"aria-hidden" => "true"}
   .fields_div
     %br
-    - k = Keyword.where(id: f.object.keyword_id).first || Keyword.new
     = f.input :id, as: :hidden
     = f.input :order_number, as: :hidden
-    = f.input :keyword_id, collection: Keyword.all.pluck(:name, :id)
     = f.input :url, wrapper_html: { class: 'value_fields url' }, input_html: {class: 'col-xs-3'}
     = f.input :locator, wrapper_html: { class: 'value_fields locator' }
     = f.input :text, wrapper_html: { class: 'value_fields text' }

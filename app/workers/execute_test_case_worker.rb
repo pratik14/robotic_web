@@ -55,10 +55,6 @@ class ExecuteTestCaseWorker
           end
         end
 
-        if event.keyword.name == 'Click Element'
-          event.message = event.message.to_s + event.text.to_s
-        end
-
         event.save!
       end
     end
