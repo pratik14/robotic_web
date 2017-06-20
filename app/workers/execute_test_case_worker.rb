@@ -62,6 +62,6 @@ class ExecuteTestCaseWorker
 
 
   def external_events
-    ["Open Browser", "Click Element", "Input Text", "Mouse Over", "Page Should Contain"]
+    ["Open Browser", "Click Element", "Input Text", "Mouse Over", "Wait Until Element Contains"]
   end
 end

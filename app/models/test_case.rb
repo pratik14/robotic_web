@@ -75,15 +75,28 @@ class TestCase < ActiveRecord::Base
         file.puts(add_css(event.locator))
         file.puts("  Capture Page Screenshot")
         file.puts(wait_for_ajax)
-      when 'Hover'
+      when 'MouseOver'
         file.puts("  Wait Until Element Is Visible  #{event.locator}")
         file.puts("  Wait Until Element Is Enabled  #{event.locator}")
         file.puts("  Mouse Over  #{event.locator}")
-      when 'page_contains'
-        file.puts("  Page Should Contain  #{event.text}")
+      when 'Assert'
+        file.puts("  Wait Until Page Contains Element  #{event.locator}")
+        file.puts(add_css(event.locator))
+        file.puts("  Capture Page Screenshot")
+        file.puts("  Wait Until Element Contains  #{event.locator}  #{event.text}")
       end
     end
     file.close
+  end
+
+  def add_css(locator)
+    style = '5px solid black'
+    "  Execute Javascript 
+       ...   var element = document.evaluate( '#{locator}' ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
+       ...   if (element != null) {
+       ...     element.style.border = '#{style}';
+       ...   }
+    "
   end
 
   def add_css(locator)

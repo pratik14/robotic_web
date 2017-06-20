@@ -34,8 +34,8 @@ class Event < ActiveRecord::Base
       GoTo: ['url'],
       Click: ['locator'],
       Change: ['locator', 'text'],
-      Hover: ['locator'],
-      PageContain: ['locator', 'text']
+      MouseOver: ['locator'],
+      Assert: ['locator', 'text']
     }
   end
 
