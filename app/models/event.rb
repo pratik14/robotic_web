@@ -25,6 +25,20 @@ class Event < ActiveRecord::Base
     status.blank?
   end
 
+  def self.triggers
+    trigger_args_list.keys
+  end
+
+  def self.trigger_args_list
+    {
+      GoTo: ['url'],
+      Click: ['locator'],
+      Change: ['locator', 'text'],
+      Hover: ['locator'],
+      PageContain: ['locator', 'text']
+    }
+  end
+
   private
 
   def mandatory_arguments

@@ -1,4 +1,14 @@
 $(document).on "turbolinks:load", ->
+  $('.test_case_events_trigger select').trigger('change')
+  $('.fields_div').hide();
+
+  $('form').on 'change', '.test_case_events_trigger select',  ->
+    that = $(this)
+    required_args = trigger_args_list[that.val()]
+    that.closest('.nested-fields').find('.value_fields.form-group').hide()
+    $.each required_args, (index, value) ->
+      that.closest('.nested-fields').find('.' + value).show()
+
   $('.carousel').carousel({ wrap: false })
   $('#events').sortable
     start: (event, ui) ->
@@ -24,20 +34,10 @@ $(document).on "turbolinks:load", ->
     axis: 'y'
 
   $('#events').on 'cocoon:after-insert', ->
-    $('.test_case_events_keyword_id:last select').val('1')
-    $('.test_case_events_keyword_id:last select').trigger('change')
+    $('.test_case_events_trigger:last select').val('1')
+    $('.test_case_events_trigger:last select').trigger('change')
     $('.test_case_events_order_number:last input').val($('ul#events li').length + 1)
     $('#events').sortable('refresh')
-
-  $('form').on 'change', '.test_case_events_keyword_id select',  ->
-    that = $(this)
-    required_args = keyword_list[that.val()]
-    that.closest('.nested-fields').find('.value_fields.form-group').hide()
-    $.each required_args, (index, value) ->
-      that.closest('.nested-fields').find('.' + value).show()
-  $('.test_case_events_keyword_id select').trigger('change')
-
-  $('.fields_div').hide();
 
   $('#events').on 'click', '.edit_event', (e)->
     e.preventDefault()

@@ -18,7 +18,7 @@ class TestCasesController < ApplicationController
   end
 
   def edit
-    @keyword_list = Keyword.all.inject({}){|h,k| h[k.id]=k.required_args;h; }
+    @trigger_args_list = Event.trigger_args_list
   end
 
   def update
@@ -26,7 +26,7 @@ class TestCasesController < ApplicationController
       if @test_case.update(test_case_params)
         format.html { redirect_to @test_case, notice: 'Test case was successfully updated.' }
       else
-        @keyword_list = Keyword.all.inject({}){|h,k| h[k.id]=k.required_args;h; }
+        @trigger_args_list = Event.trigger_args_list
         format.html { render :edit }
       end
     end

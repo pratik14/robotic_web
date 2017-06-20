@@ -12,12 +12,10 @@
     %br
     = f.input :id, as: :hidden
     = f.input :order_number, as: :hidden
+    = f.input :trigger, collection: Event.triggers
     = f.input :url, wrapper_html: { class: 'value_fields url' }, input_html: {class: 'col-xs-3'}
     = f.input :locator, wrapper_html: { class: 'value_fields locator' }
     = f.input :text, wrapper_html: { class: 'value_fields text' }
-    = f.input :expected, wrapper_html: { class: 'value_fields expected' }
-    = f.input :value, wrapper_html: { class: 'value_fields value' }
-    = f.input :condition, wrapper_html: { class: 'value_fields condition' }, input_html: {class: 'col-xs-3'}
     %br
     %br
   - unless f.object.status.blank?
