@@ -48,7 +48,11 @@ class ExecuteTestCaseWorker
             event.message = doc
           end
         else
-          event.message = [kw['msg']].flatten.join(',')
+          if kw['msg'][1].include?("ElementNotVisibleException")
+            event.message = "Element is not currently visible and may not be manipulated"
+          else
+            event.message = [kw['msg']].flatten.join(',')
+          end
         end
 
         if event.keyword.name == 'Click Element'
