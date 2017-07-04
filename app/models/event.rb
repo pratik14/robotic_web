@@ -34,6 +34,7 @@ class Event < ActiveRecord::Base
       GoTo: ['url'],
       Click: ['locator'],
       Change: ['locator', 'text'],
+      Submit: ['locator'],
       MouseOver: ['locator'],
       Assert: ['locator', 'text']
     }

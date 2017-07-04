@@ -61,12 +61,20 @@ class TestCase < ActiveRecord::Base
         file.puts("  Capture Page Screenshot")
       when 'Load'
         file.puts("  Wait For Condition  return document.readyState == 'complete'")
+        file.puts("  Capture Page Screenshot")
       when 'Click'
         file.puts("  Wait Until Element Is Visible  #{event.locator}")
         file.puts(add_css(event.locator))
         file.puts("  Wait Until Element Is Enabled  #{event.locator}")
         file.puts("  Capture Page Screenshot")
         file.puts("  Click Element  #{event.locator}")
+        file.puts(wait_for_ajax)
+      when 'Submit'
+        file.puts("  Wait Until Element Is Visible  #{event.locator}")
+        file.puts(add_css(event.locator))
+        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
+        file.puts("  Capture Page Screenshot")
+        file.puts("  Submit Form  #{event.locator}")
         file.puts(wait_for_ajax)
       when 'Change'
         file.puts("  Wait Until Element Is Visible  #{event.locator}")
@@ -79,6 +87,7 @@ class TestCase < ActiveRecord::Base
         file.puts("  Wait Until Element Is Visible  #{event.locator}")
         file.puts("  Wait Until Element Is Enabled  #{event.locator}")
         file.puts("  Mouse Over  #{event.locator}")
+        file.puts("  Capture Page Screenshot")
       when 'Assert'
         file.puts("  Wait Until Page Contains Element  #{event.locator}")
         file.puts(add_css(event.locator))
