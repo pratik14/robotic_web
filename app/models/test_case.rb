@@ -32,8 +32,14 @@ class TestCase < ActiveRecord::Base
   end
 
   def verify
+    restore_test_db
     create_source_file
     ExecuteTestCaseWorker.perform_async(id)
+  end
+
+  def restore_test_db
+    uri = URI(user.setup_url)
+    Net::HTTP.get(uri)
   end
 
   def attach_file
