@@ -30,6 +30,14 @@ module Events
         "MouseOver text: #{self.text}"
       when 'Assert'
         "Page should contain: #{self.text}"
+      when 'Select'
+        "Select option with : #{self.text}"
+      when 'Checkbox'
+        if self.text
+          "Select Checkbox"
+        else
+          "Unselect Checkbox"
+        end
       end
     end
   end
