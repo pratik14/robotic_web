@@ -27,35 +27,44 @@ class ExecuteTestCaseWorker
     hash = Hash.from_xml(File.read("#{test_case.file_path}.xml"))
     set_test_case_result(test_case, hash)
     hash = hash['robot']['suite']['test']['kw']
-    newIndex = -1
+    newIndex = 0
     hash.each_with_index do |kw, index|
+      event = test_case.events[newIndex]
+      event.status = kw['status']['status']
+      screenshot_path = "#{Rails.root}/tmp/robot_file/#{test_case.id}/selenium-screenshot-#{newIndex + 1}.png"
+      if File.exist?(screenshot_path)
+        event.avatar =  File.open(screenshot_path, 'rb')
+      end
+      if event.status == 'FAIL'
+        event.message = 
+          if event.trigger == 'Change'
+            "Element with locator: #{event.locator} not found"
+          else
+            "Element with text: #{event.text} not found"
+          end
+      else
+        event.message = 
+          case event.trigger
+          when 'GoTo'
+            "Open Browser #{event.url}"
+          when 'Load'
+            "Wait till page get loaded"
+          when 'Click'
+            "Click element with text: #{event.text}"
+          when 'Submit'
+            "Submit form"
+          when 'Change'
+            "Change text to: #{event.text}"
+          when 'MouseOver'
+            "MouseOver text: #{event.text}"
+          when 'Assert'
+            "Page should contain: #{event.text}"
+          end
+      end
+
+      event.save!
       if external_events.include? kw['name']
         newIndex = newIndex + 1
-        event = test_case.events[newIndex]
-        event.status = kw['status']['status']
-        screenshot_path = "#{Rails.root}/tmp/robot_file/#{test_case.id}/selenium-screenshot-#{newIndex + 1}.png"
-        if File.exist?(screenshot_path)
-          event.avatar =  File.open(screenshot_path, 'rb')
-        end
-        if event.status == 'PASS'
-          event.message = kw['msg']
-          if event.message.blank?
-            doc = kw['doc']
-            args = [kw['arguments']['arg']].flatten
-            args.each do |arg|
-              doc = doc.sub(/`[a-z]*`/, arg)
-            end
-            event.message = doc
-          end
-        else
-          if kw['msg'][1].include?("ElementNotVisibleException")
-            event.message = "Element is not currently visible and may not be manipulated"
-          else
-            event.message = [kw['msg']].flatten.join(',')
-          end
-        end
-
-        event.save!
       end
     end
   end
