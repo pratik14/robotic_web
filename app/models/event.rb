@@ -1,4 +1,5 @@
 class Event < ActiveRecord::Base
+  include Events::Message
 
   attr_accessor :width, :height
 
@@ -23,6 +24,10 @@ class Event < ActiveRecord::Base
 
   def pending?
     status.blank?
+  end
+
+  def pass?
+    status == 'PASS'
   end
 
   def self.triggers

@@ -35,32 +35,8 @@ class ExecuteTestCaseWorker
       if File.exist?(screenshot_path)
         event.avatar =  File.open(screenshot_path, 'rb')
       end
-      if event.status == 'FAIL'
-        event.message = 
-          if event.trigger == 'Change'
-            "Element with locator: #{event.locator} not found"
-          else
-            "Element with text: #{event.text} not found"
-          end
-      else
-        event.message = 
-          case event.trigger
-          when 'GoTo'
-            "Open Browser #{event.url}"
-          when 'Load'
-            "Wait till page get loaded"
-          when 'Click'
-            "Click element with text: #{event.text}"
-          when 'Submit'
-            "Submit form"
-          when 'Change'
-            "Change text to: #{event.text}"
-          when 'MouseOver'
-            "MouseOver text: #{event.text}"
-          when 'Assert'
-            "Page should contain: #{event.text}"
-          end
-      end
+
+      event.message = event.display_message
 
       event.save!
       if external_events.include? kw['name']
