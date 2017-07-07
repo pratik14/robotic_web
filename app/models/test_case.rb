@@ -1,4 +1,5 @@
 class TestCase < ActiveRecord::Base
+  include TestCases::RobotFile
 
   belongs_to :user
   has_many :events, dependent: :destroy
@@ -33,7 +34,7 @@ class TestCase < ActiveRecord::Base
 
   def verify
     restore_test_db
-    create_source_file
+    generate
     ExecuteTestCaseWorker.perform_async(id)
   end
 
@@ -43,91 +44,8 @@ class TestCase < ActiveRecord::Base
   end
 
   def attach_file
-    create_source_file
+    generate
     self.source_file =  File.open(file_path)
-  end
-
-  def create_source_file
-    file = File.open(file_path, 'w+')
-    file.puts('*** Settings ***')
-    file.puts('Library           Selenium2Library    timeout=10')
-    file.puts('Suite Teardown    Close All Browsers')
-    file.puts('')
-    file.puts('*** Variables ***')
-    file.puts('${BROWSER}    phantomjs')
-    file.puts('')
-    file.puts('*** Test Cases ***')
-    file.puts("#{name}")
-    file.puts("  Set Screenshot Directory  #{Rails.root}/tmp/robot_file/#{id}")
-    events.collect do |event|
-      case event.trigger
-      when 'GoTo'
-        file.puts("  Open Browser  #{event.url}  phantomjs")
-        file.puts("  Set Window Size  1200  800")
-        file.puts("  Capture Page Screenshot")
-      when 'Load'
-        file.puts("  Wait For Condition  return document.readyState == 'complete'")
-        file.puts("  Capture Page Screenshot")
-      when 'Click'
-        file.puts("  Wait Until Element Is Visible  #{event.locator}")
-        file.puts(add_css(event.locator))
-        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
-        file.puts("  Capture Page Screenshot")
-        file.puts("  Click Element  #{event.locator}")
-        file.puts(wait_for_ajax)
-      when 'Submit'
-        file.puts("  Wait Until Element Is Visible  #{event.locator}")
-        file.puts(add_css(event.locator))
-        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
-        file.puts("  Capture Page Screenshot")
-        file.puts("  Submit Form  #{event.locator}")
-        file.puts(wait_for_ajax)
-      when 'Change'
-        file.puts("  Wait Until Element Is Visible  #{event.locator}")
-        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
-        file.puts("  Input Text  #{event.locator}  #{event.text}")
-        file.puts(add_css(event.locator))
-        file.puts("  Capture Page Screenshot")
-        file.puts(wait_for_ajax)
-      when 'MouseOver'
-        file.puts("  Wait Until Element Is Visible  #{event.locator}")
-        file.puts("  Wait Until Element Is Enabled  #{event.locator}")
-        file.puts("  Mouse Over  #{event.locator}")
-        file.puts("  Capture Page Screenshot")
-      when 'Assert'
-        file.puts("  Wait Until Page Contains Element  #{event.locator}")
-        file.puts(add_css(event.locator))
-        file.puts("  Capture Page Screenshot")
-        file.puts("  Wait Until Element Contains  #{event.locator}  #{event.text}")
-      end
-    end
-    file.close
-  end
-
-  def add_css(locator)
-    style = '5px solid black'
-    "  Execute Javascript 
-       ...   var element = document.evaluate( '#{locator}' ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
-       ...   if (element != null) {
-       ...     element.style.border = '#{style}';
-       ...   }
-    "
-  end
-
-  def add_css(locator)
-    style = '5px solid black'
-    "  Execute Javascript 
-       ...   var element = document.evaluate( '#{locator}' ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;
-       ...   if (element != null) {
-       ...     element.style.border = '#{style}';
-       ...   }
-    "
-  end
-
-  def wait_for_ajax
-    "  : FOR    ${INDEX}    IN RANGE    1    5000
-  \\    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0
-  \\    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop"
   end
 
   def file_path
@@ -137,6 +55,6 @@ class TestCase < ActiveRecord::Base
   end
 
   def file_name
-    "#{name.parameterize.underscore}.txt"
+    "#{self.name.parameterize.underscore}.txt"
   end
 end
