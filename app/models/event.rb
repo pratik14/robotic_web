@@ -41,7 +41,9 @@ class Event < ActiveRecord::Base
       Change: ['locator', 'text'],
       Submit: ['locator'],
       MouseOver: ['locator'],
-      Assert: ['locator', 'text']
+      Assert: ['locator', 'text'],
+      Select: ['locator', 'text'],
+      Checkbox: ['locator']
     }
   end
 

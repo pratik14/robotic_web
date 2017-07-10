@@ -31,22 +31,25 @@ class ExecuteTestCaseWorker
     hash.each_with_index do |kw, index|
       event = test_case.events[newIndex]
       event.status = kw['status']['status']
-      screenshot_path = "#{Rails.root}/tmp/robot_file/#{test_case.id}/selenium-screenshot-#{newIndex + 1}.png"
+      screenshot_path = "#{Rails.root}/tmp/robot_file/#{test_case.id}/selenium-screenshot-#{newIndex}.png"
       if File.exist?(screenshot_path)
         event.avatar =  File.open(screenshot_path, 'rb')
       end
-
       event.message = event.display_message
-
       event.save!
       if external_events.include? kw['name']
-        newIndex = newIndex + 1
+        newIndex += 1
       end
     end
   end
 
 
   def external_events
-    ["Open Browser", "Click Element", "Input Text", "Mouse Over", "Wait Until Element Contains", "Wait For Condition", "Submit Form"]
+    [
+      "Open Browser", "Click Element", "Input Text", 
+      "Mouse Over", "Wait Until Element Contains", 
+      "Wait For Condition", "Submit Form", "Select", "Select Checkbox", 
+      "Unselect Checkbox"
+    ]
   end
 end

@@ -33,7 +33,8 @@ module TestCases
     end
 
     def click(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("#{add_css(event.locator)}\n")
       str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       str.concat("\tCapture Page Screenshot\n")
@@ -42,16 +43,17 @@ module TestCases
     end
 
     def submit(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("#{add_css(event.locator)}\n")
-      str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       str.concat("\tCapture Page Screenshot\n")
       str.concat("\tSubmit Form  #{event.locator}\n")
       str.concat("#{wait_for_ajax}")
     end
 
     def change(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       str.concat("\tInput Text  #{event.locator}  #{event.text}\n")
       str.concat("#{add_css(event.locator)}\n")
@@ -60,21 +62,24 @@ module TestCases
     end
 
     def mouse_over(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       str.concat("\tMouse Over  #{event.locator}\n")
       str.concat("\tCapture Page Screenshot")
     end
 
     def select(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       str.concat("\tSelect From List By Label  #{event.locator}  #{event.text}\n")
       str.concat("\tCapture Page Screenshot")
     end
 
     def checkbox(event)
-      str = "\tWait Until Element Is Visible  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Element Is Visible  #{event.locator}\n")
       str.concat("\tWait Until Element Is Enabled  #{event.locator}\n")
       if event.text
         str.concat("\tSelect Checkbox  #{event.locator}\n")
@@ -85,7 +90,8 @@ module TestCases
     end
 
     def assert(event)
-      str = "\tWait Until Page Contains Element  #{event.locator}\n"
+      str = scroll_to_locator(event.locator)
+      str.concat("\tWait Until Page Contains Element  #{event.locator}\n")
       str.concat("#{add_css(event.locator)}\n")
       str.concat("\tCapture Page Screenshot\n")
       str.concat("\tWait Until Element Contains  #{event.locator}  #{event.text}")
@@ -104,6 +110,14 @@ module TestCases
       str = "\t: FOR    ${INDEX}    IN RANGE    1    5000\n"
       str.concat("\t\\    ${IsAjaxComplete}    Execute JavaScript    return window.jQuery!=undefined && jQuery.active==0\n")
       str.concat("\t\\    Run Keyword If    ${IsAjaxComplete}==True    Exit For Loop")
+    end
+
+    def scroll_to_locator(locator)
+      str = "\tExecute Javascript\n"
+      str.concat("\t\t...   var element = document.evaluate( '#{locator}' ,document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null ).singleNodeValue;\n")
+      str.concat("\t\t...   if (element != null) {\n")
+      str.concat("\t\t...     $(element)[0].scrollIntoView( true )\n")
+      str.concat("\t\t...   }\n")
     end
   end
 end
