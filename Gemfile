@@ -52,6 +52,7 @@ gem 'devise'
 gem 'devise-bootstrap-views'
 gem 'rake', '< 11.0'
 gem 'figaro'
+gem 'aasm'
 
 group :development, :test do
   gem 'rspec-rails'

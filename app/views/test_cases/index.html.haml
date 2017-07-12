@@ -1,10 +1,6 @@
-.page-header
-  %h1 Listing TestCases
+%h1 Test Cases
 
-
-= will_paginate @test_cases, renderer: BootstrapPagination::Rails
-
-%table.table
+%table.table.table-hover
   %tr
     %th Name
     %th Status
@@ -13,14 +9,36 @@
   - @test_cases.each do |test_case|
     %tr
       %td= test_case.name
-      %td= test_case.status
       %td
-        - if test_case.failed?
+        %span{ class: status_badge(test_case.status) }
+          = test_case.status.upcase
+      %td
+        - if test_case.fail?
           = link_to 'Screenshot', test_case.screenshot
         - else
           %span ---
       %td
-        = link_to 'Edit', edit_test_case_path(test_case), class: 'btn btn-default'
-        = link_to 'Verify', verify_test_case_path(test_case), class: 'btn btn-default'
-        = link_to 'Download', download_test_case_path(test_case), class: 'btn btn-default'
-        = link_to 'Destroy', test_case, :method => :delete, :data => { :confirm => 'Are you sure?' }, class: 'btn btn-danger'
+        - unless test_case.running?
+          .btn-group
+            .btn.btn-default.dropdown-toggle{ "data-toggle": "dropdown" }
+              %i.glyphicon.glyphicon-cog
+              %span.caret
+            %ul.dropdown-menu
+              %li
+                = link_to edit_test_case_path(test_case) do
+                  %i.glyphicon.glyphicon-edit
+                  Edit
+              %li
+                = link_to verify_test_case_path(test_case), data: { disable_with: "Running...", turbolinks: false } do
+                  %i.glyphicon.glyphicon-refresh
+                  Run
+              %li
+                = link_to download_test_case_path(test_case) do
+                  %i.glyphicon.glyphicon-download
+                  Download
+              %li
+                = link_to test_case, method: :delete, data: { confirm: 'Are you sure?' } do
+                  %i.glyphicon.glyphicon-trash
+                  Destroy
+.pull-right
+  = will_paginate @test_cases, renderer: BootstrapPagination::Rails

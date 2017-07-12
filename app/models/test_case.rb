@@ -1,5 +1,6 @@
 class TestCase < ActiveRecord::Base
   include TestCases::RobotFile
+  include AASM
 
   belongs_to :user
   has_many :events, dependent: :destroy
@@ -11,6 +12,23 @@ class TestCase < ActiveRecord::Base
   validates_associated :events
 
   #before_save :attach_file
+
+  aasm column: :status do
+    state :pending, initial: true
+    state :running, :fail, :pass
+
+    event :run do
+      transitions from: [ :pending, :fail, :pass ], to: :running
+    end
+
+    event :pass do
+      transitions from: :running, to: :pass
+    end
+
+    event :fail do
+      transitions from: :running, to: :fail
+    end
+  end
 
   def screenshot
     begin
@@ -33,6 +51,7 @@ class TestCase < ActiveRecord::Base
   end
 
   def verify
+    run!
     restore_test_db
     generate
     ExecuteTestCaseWorker.perform_async(id)

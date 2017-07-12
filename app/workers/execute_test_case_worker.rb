@@ -9,7 +9,7 @@ class ExecuteTestCaseWorker
       save_result_to_db(test_case)
       test_case.save
     rescue Exception => e
-      test_case.status = 'FAIL'
+      tese_case.fail
       test_case.message = e
       test_case.save(validate: false)
     end
@@ -18,7 +18,10 @@ class ExecuteTestCaseWorker
   def set_test_case_result(test_case, hash)
     test_case.status = hash['robot']['suite']['status']['status']
     if test_case.status == 'FAIL'
+      test_case.fail
       test_case.message = hash['robot']['suite']['test']['status']
+    else
+      test_case.pass
     end
     test_case.save(validate: false)
   end
