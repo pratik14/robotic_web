@@ -5,4 +5,9 @@ module TestCasesHelper
     args.include?(field) ? '' : 'hidden'
   end
 
+  def status_badge(status)
+    badge = 'test-status label label-'
+    mapping = { pending: 'primary', running: 'warning', pass: 'success', fail: 'danger' }
+    return badge + mapping[status.to_sym]
+  end
 end
